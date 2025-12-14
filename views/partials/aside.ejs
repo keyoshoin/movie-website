@@ -1,0 +1,105 @@
+<aside class="sidebar col-lg-3 col-md-4 col-12">
+    <div class="sidebar-content">
+        <% var hideHot = (typeof hideHot !== 'undefined') ? hideHot : false; %>
+        <% if (!hideHot) { %>
+        <div class="widget">
+            <h5 class="widget-title">
+                <i class="bi bi-star-fill"></i> 热门电影
+            </h5>
+            <div class="accordion accordion-flush" id="hotMoviesAccordion">
+                <% if (typeof hotMovies !== 'undefined' && Array.isArray(hotMovies) && hotMovies.length > 0) { %>
+                    <% hotMovies.forEach((m, index) => { %>
+                        <div class="accordion-item" style="background-color: #14161b; border: 1px solid #2a2c34; margin-bottom: 8px; border-radius: 6px;">
+                            <h2 class="accordion-header" id="heading<%= index %>">
+                                <button class="accordion-button collapsed" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse<%= index %>" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapse<%= index %>"
+                                        style="background-color: #1c1e25; color: #f5f5f5; border: none; padding: 12px 15px;">
+                                    <i class="bi bi-film me-2"></i>
+                                    <span style="flex-grow: 1;"><%= m.title %></span>
+                                    <span class="badge bg-danger ms-2"><%= m.rating %></span>
+                                </button>
+                            </h2>
+                            <div id="collapse<%= index %>" 
+                                 class="accordion-collapse collapse" 
+                                 aria-labelledby="heading<%= index %>" 
+                                 data-bs-parent="#hotMoviesAccordion">
+                                <div class="accordion-body" style="background-color: #14161b; padding: 15px;">
+                                    <% if (m.poster_url || true) { %>
+                                        <div class="text-center mb-3">
+                                            <% var localPoster = '/images/' + m.id + '.jpg'; var fallback = m.poster_url ? m.poster_url : '/images/index1.jpg'; %>
+                                            <img src="<%= localPoster %>" 
+                                                 alt="<%= m.title %>" 
+                                                 class="img-fluid rounded" 
+                                                 style="max-height: 200px; object-fit: cover;"
+                                                 onerror="this.onerror=null; this.src='<%= fallback %>'">
+                                        </div>
+                                    <% } %>
+                                    <p style="color: #d0d0d0; font-size: 0.9rem; line-height: 1.6;">
+                                        <%= m.description ? (m.description.length > 100 ? m.description.substring(0, 100) + '...' : m.description) : '暂无简介' %>
+                                    </p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small style="color: #a8a8a8;">
+                                            <i class="bi bi-calendar3"></i> <%= m.year || '未知' %>
+                                        </small>
+                                        <a href="/movies/<%= m.id %>" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-arrow-right-circle"></i> 查看详情
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <!-- 默认电影列表 -->
+                    <% 
+                        var defaultMovies = [
+                            {id: 1, title: '肖申克的救赎', rating: 9.7, year: 1994, description: '监狱中的希望之光。'},
+                            {id: 2, title: '霸王别姬', rating: 9.5, year: 1993, description: '京剧艺人的悲欢离合。'},
+                            {id: 3, title: '阿甘正传', rating: 9.1, year: 1994, description: '一个善良人的人生奇迹。'},
+                            {id: 6, title: '流浪地球', rating: 8.3, year: 2019, description: '人类生存的壮丽想象。'},
+                            {id: 7, title: '你的名字', rating: 8.8, year: 2016, description: '穿越时空的爱情。'}
+                        ];
+                        defaultMovies.forEach((m, index) => {
+                    %>
+                        <div class="accordion-item" style="background-color: #14161b; border: 1px solid #2a2c34; margin-bottom: 8px; border-radius: 6px;">
+                            <h2 class="accordion-header" id="heading<%= index %>">
+                                <button class="accordion-button collapsed" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse<%= index %>" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapse<%= index %>"
+                                        style="background-color: #1c1e25; color: #f5f5f5; border: none; padding: 12px 15px;">
+                                    <i class="bi bi-film me-2"></i>
+                                    <span style="flex-grow: 1;"><%= m.title %></span>
+                                    <span class="badge bg-danger ms-2"><%= m.rating %></span>
+                                </button>
+                            </h2>
+                            <div id="collapse<%= index %>" 
+                                 class="accordion-collapse collapse" 
+                                 aria-labelledby="heading<%= index %>" 
+                                 data-bs-parent="#hotMoviesAccordion">
+                                <div class="accordion-body" style="background-color: #14161b; padding: 15px;">
+                                    <p style="color: #d0d0d0; font-size: 0.9rem;"><%= m.description %></p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <small style="color: #a8a8a8;">
+                                            <i class="bi bi-calendar3"></i> <%= m.year %>
+                                        </small>
+                                        <a href="/movies/<%= m.id %>" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-arrow-right-circle"></i> 查看详情
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+
+    </div>
+</aside>
+

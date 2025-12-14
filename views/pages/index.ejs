@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : '首页 - 电影网站' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container-fluid">
+        <div class="row">
+            
+            <main class="col-12">
+                <!-- Jumbotron 巨幕组件 -->
+                <div id="jumbotron" class="jumbotron-custom mb-4">
+                    <% var jbg = '/images/index.jpg'; var jbgFallback = '/images/index1.jpg'; %>
+                    <img src="<%= jbg %>" alt="首页海报" class="jumbotron-bg" onerror="this.onerror=null; this.src='<%= jbgFallback %>'" />
+                    <div class="jumbotron-content">
+                        <h1 class="display-4 animate-fade-in">欢迎来到电影世界</h1>
+                        <p class="lead animate-slide-up">发现经典，探索精彩，感受电影的魅力</p>
+                        <hr class="my-4">
+                        <p>这里有最全的电影资源，最详细的电影信息，最真实的用户评价</p>
+                        <a class="btn btn-primary btn-lg animate-bounce" href="/movies" role="button">
+                            <i class="bi bi-play-circle"></i> 开始探索
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 轮播图 -->
+                <div id="movieCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="3000">
+                    <div class="carousel-indicators">
+                        <% featuredMovies.forEach((movie, index) => { %>
+                            <button type="button" data-bs-target="#movieCarousel" data-bs-slide-to="<%= index %>" 
+                                class="<%= index === 0 ? 'active' : '' %>" aria-current="<%= index === 0 ? 'true' : 'false' %>"></button>
+                        <% }); %>
+                    </div>
+                    <div class="carousel-inner">
+                        <% featuredMovies.forEach((movie, index) => { %>
+                            <div class="carousel-item <%= index === 0 ? 'active' : '' %>" data-movie-id="<%= movie.id %>">
+                                <div class="carousel-image-placeholder">
+                                    <% 
+                                        var localPoster = '/images/' + movie.id + '.jpg';
+                                        var fallbackPoster = movie.poster_url ? movie.poster_url : '/images/index1.jpg';
+                                    %>
+                                    <img src="<%= localPoster %>" alt="<%= movie.title %>" class="carousel-poster-img" onerror="this.onerror=null; this.src='<%= fallbackPoster %>'" />
+                                    <div class="carousel-content">
+                                        <h2><%= movie.title %></h2>
+                                        <p class="carousel-rating">
+                                            <i class="bi bi-star-fill"></i> <%= movie.rating %>
+                                        </p>
+                                        <p class="carousel-description"><%= movie.description.substring(0, 100) %>...</p>
+                                        <a href="/movies/<%= movie.id %>" class="btn btn-light">查看详情</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#movieCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#movieCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <!-- 最新电影推荐（横向滚动卡片） -->
+                <section id="latest" class="top-movies-section">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="section-title mb-0">
+                            <i class="bi bi-clock-history"></i> 最新上映
+                        </h2>
+                        <a href="/movies?sort=year" class="more-link text-muted">更多 &gt;</a>
+                    </div>
+
+                    <div class="recommendation-list">
+                        <% 
+                            // 使用 latestMovies 数组，已在服务器端按年份排序
+                            var latest = Array.isArray(latestMovies) ? latestMovies : [];
+                        %>
+                        <% latest.slice(0, 10).forEach(function(movie){ %>
+                            <div class="recommendation-item" data-movie-id="<%= movie.id %>">
+                                <div class="poster-link poster-with-play">
+                                    <% var localPosterRec = '/images/' + movie.id + '.jpg'; var fallbackRec = movie.poster_url ? movie.poster_url : '/images/index1.jpg'; %>
+                                    <img src="<%= localPosterRec %>" alt="<%= movie.title %>" class="rec-poster" onerror="this.onerror=null; this.src='<%= fallbackRec %>'" />
+                                    <a href="/movies/<%= movie.id %>" class="play-btn-overlay" title="播放">
+                                        <i class="bi bi-play-circle-fill"></i>
+                                    </a>
+                                </div>
+                                <div class="rec-title"><%= movie.title %></div>
+                                <div class="rec-sub"><%= movie.year || '未知' %></div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+
+                <!-- 高分电影推荐（横向滚动卡片） -->
+                <section id="top-rated" class="top-movies-section">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="section-title mb-0">
+                            <i class="bi bi-star-fill"></i> 高分电影
+                        </h2>
+                        <a href="/movies?sort=rating" class="more-link text-muted">更多 &gt;</a>
+                    </div>
+
+                    <div class="recommendation-list">
+                        <% 
+                            // 使用 topMovies 数组，已在服务器端按评分降序排序
+                            var high = Array.isArray(topMovies) ? topMovies : [];
+                        %>
+                        <% high.slice(0, 10).forEach(function(movie){ %>
+                            <div class="recommendation-item" data-movie-id="<%= movie.id %>">
+                                <div class="poster-link poster-with-play">
+                                    <% var localPosterHigh = '/images/' + movie.id + '.jpg'; var fallbackHigh = movie.poster_url ? movie.poster_url : '/images/index1.jpg'; %>
+                                    <img src="<%= localPosterHigh %>" alt="<%= movie.title %>" class="rec-poster" onerror="this.onerror=null; this.src='<%= fallbackHigh %>'" />
+                                    <a href="/movies/<%= movie.id %>" class="play-btn-overlay" title="播放">
+                                        <i class="bi bi-play-circle-fill"></i>
+                                    </a>
+                                </div>
+                                <div class="rec-title"><%= movie.title %></div>
+                                <div class="rec-sub"><i class="bi bi-star-fill"></i> <%= movie.rating %></div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+            </main>
+            
+        </div>
+    </div>
+    
+    <%- include('../partials/footer') %>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

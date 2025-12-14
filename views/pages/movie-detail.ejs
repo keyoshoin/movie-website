@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : '电影详情 - 电影网站' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container-fluid">
+        <div class="row">
+            
+            <main class="col-12">
+                <div class="movie-detail-page">
+                    <div class="row align-items-start">
+                        <div class="col-md-4">
+                            <div class="movie-poster-large poster-with-play">
+                                <% var localPoster = '/images/' + movie.id + '.jpg'; var fallback = movie.poster_url ? movie.poster_url : '/images/index1.jpg'; %>
+                                <img src="<%= localPoster %>" alt="<%= movie.title %>" class="movie-poster-img-large" onerror="this.onerror=null; this.src='<%= fallback %>'" />
+                                <a href="/play/<%= movie.id %>" class="play-btn-overlay" title="播放">
+                                    <i class="bi bi-play-fill" style="font-size:34px"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h1 class="movie-detail-title"><%= movie.title %></h1>
+
+                            <div class="d-flex align-items-center mb-2 gap-2">
+                                <div class="meta-pill"><%= movie.year || '未知' %></div>
+                                <div class="meta-pill"><%= movie.country || '未知' %></div>
+                                <% let genres = [];
+                                    if (Array.isArray(movie.genre)) {
+                                        genres = movie.genre;
+                                    } else if (typeof movie.genre === 'string') {
+                                        genres = movie.genre.split(',').map(s => s.trim()).filter(Boolean);
+                                    }
+                                %>
+                                <% if (genres.length>0) { %>
+                                    <div class="meta-pill"><%= genres.join(' / ') %></div>
+                                <% } %>
+                                <div class="ms-auto d-flex gap-2 action-buttons">
+                                    <a href="/play/<%= movie.id %>" class="btn btn-danger btn-lg btn-play">立即播放</a>
+                                    <button class="btn btn-outline-light" id="favoriteBtn" data-movie-id="<%= movie.id %>" title="收藏">
+                                        <i class="bi bi-heart"></i> <span id="favoriteText">收藏</span>
+                                    </button>
+                                    <button class="btn btn-outline-light" id="shareBtn" title="分享"><i class="bi bi-share-fill"></i></button>
+                                </div>
+                            </div>
+
+                            <div class="detail-meta-lines mb-3">
+                                <div><strong>备注：</strong> <%= movie.status || '已完结' %></div>
+                                <div><strong>导演：</strong> <%= movie.director || '未知' %></div>
+                                <div><strong>更新：</strong> <%= movie.updated_at ? movie.updated_at : '' %></div>
+                            </div>
+
+                            <div class="movie-info-section">
+                                <div class="synopsis-header">
+                                    <span class="synopsis-pill">简介</span>
+                                </div>
+                                <% if (movie.description && movie.description.trim().length > 0) { %>
+                                    <p class="movie-description-full"><%= movie.description %></p>
+                                <% } else { %>
+                                    <p class="movie-description-full text-muted">暂无简介。</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 相关电影推荐 -->
+                    <% if (relatedMovies.length > 0) { %>
+                        <div class="related-movies mt-5">
+                            <h3 class="section-title">
+                                <i class="bi bi-collection-play"></i> 相关推荐
+                            </h3>
+                            <div class="row g-4">
+                                <% relatedMovies.forEach(rm => { %>
+                                    <div class="col-lg-3 col-md-4 col-6">
+                                        <div class="movie-card-small">
+                                            <div class="movie-poster-placeholder-small">
+                                                <% var localPosterRm = '/images/' + rm.id + '.jpg'; var fallbackRm = rm.poster_url ? rm.poster_url : '/images/index1.jpg'; %>
+                                                <img src="<%= localPosterRm %>" alt="<%= rm.title %>" class="movie-poster-img" onerror="this.onerror=null; this.src='<%= fallbackRm %>'" />
+                                            </div>
+                                            <div class="movie-info-small">
+                                                <h6 class="movie-title-small"><%= rm.title %></h6>
+                                                <p class="movie-rating-small">
+                                                    <i class="bi bi-star-fill"></i> <%= rm.rating %>
+                                                </p>
+                                                <a href="/movies/<%= rm.id %>" class="btn btn-sm btn-outline-primary w-100">查看详情</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- 评论区 -->
+                    <div class="comments-section mt-5">
+                        <h3 class="section-title mb-4">
+                            <i class="bi bi-chat-dots"></i> 评论区
+                        </h3>
+                        
+                        <!-- 发表评论表单 -->
+                        <% if (user) { %>
+                        <div class="card mb-4" style="background-color: #14161b; border: 1px solid #1f2026;">
+                            <div class="card-body">
+                                <form id="commentForm">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="commentContent" rows="3" placeholder="写下你的观影感受..." required style="background-color: #1c1e25; border: 1px solid #2a2c34; color: #f5f5f5;"></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small style="color: #b8b8b8;">分享你的想法，让更多人看到你的观点</small>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-send"></i> 发表评论
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <% } else { %>
+                        <div class="alert alert-info" style="background-color: #1c1e25; border: 1px solid #2a2c34; color: #f0f0f0;">
+                            <i class="bi bi-info-circle"></i> 
+                            <a href="/auth/login" class="text-primary" style="color: #6ea8fe !important;">登录</a> 后即可发表评论
+                        </div>
+                        <% } %>
+
+                        <!-- 评论列表 -->
+                        <div id="commentsList">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">加载中...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <%- include('../partials/footer') %>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        const movieId = <%= movie.id %>;
+        
+        // 页面加载时检查收藏状态
+        $(document).ready(function() {
+            checkFavoriteStatus();
+            loadComments();
+            // 初始化右键菜单
+            bindContextMenu();
+        });
+
+        // 检查收藏状态
+        function checkFavoriteStatus() {
+            $.get(`/api/favorites/check/${movieId}`)
+                .done(function(data) {
+                    if (data.isFavorite) {
+                        $('#favoriteBtn').addClass('active');
+                        $('#favoriteBtn i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        $('#favoriteText').text('已收藏');
+                    }
+                })
+                .fail(function() {
+                    console.log('检查收藏状态失败');
+                });
+        }
+
+        // 收藏按钮点击
+        $('#favoriteBtn').click(function() {
+            const isFavorite = $(this).hasClass('active');
+            
+            if (isFavorite) {
+                // 取消收藏
+                $.ajax({
+                    url: `/api/favorites/${movieId}`,
+                    type: 'DELETE',
+                    success: function() {
+                        $('#favoriteBtn').removeClass('active');
+                        $('#favoriteBtn i').removeClass('bi-heart-fill').addClass('bi-heart');
+                        $('#favoriteText').text('收藏');
+                        showToast('已取消收藏');
+                    },
+                    error: function() {
+                        showToast('操作失败', 'error');
+                    }
+                });
+            } else {
+                // 添加收藏
+                $.post('/api/favorites', { movieId: movieId })
+                    .done(function() {
+                        $('#favoriteBtn').addClass('active');
+                        $('#favoriteBtn i').removeClass('bi-heart').addClass('bi-heart-fill');
+                        $('#favoriteText').text('已收藏');
+                        showToast('收藏成功');
+                    })
+                    .fail(function(xhr) {
+                        if (xhr.status === 401) {
+                            showToast('请先登录', 'error');
+                            setTimeout(() => window.location.href = '/auth/login', 1500);
+                        } else {
+                            showToast('操作失败', 'error');
+                        }
+                    });
+            }
+        });
+
+        // 分享按钮点击 - 复制页面链接
+        $('#shareBtn').click(function() {
+            const currentUrl = window.location.href;
+            
+            // 使用现代的 Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(currentUrl)
+                    .then(() => {
+                        showToast('链接已复制到剪贴板');
+                        // 添加复制成功动画效果
+                        $(this).addClass('btn-success').removeClass('btn-outline-light');
+                        setTimeout(() => {
+                            $(this).removeClass('btn-success').addClass('btn-outline-light');
+                        }, 1000);
+                    })
+                    .catch(() => {
+                        fallbackCopyTextToClipboard(currentUrl);
+                    });
+            } else {
+                fallbackCopyTextToClipboard(currentUrl);
+            }
+        });
+
+        // 兼容旧浏览器的复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "-999px";
+            textArea.style.left = "-999px";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('链接已复制到剪贴板');
+                    $('#shareBtn').addClass('btn-success').removeClass('btn-outline-light');
+                    setTimeout(() => {
+                        $('#shareBtn').removeClass('btn-success').addClass('btn-outline-light');
+                    }, 1000);
+                } else {
+                    showToast('复制失败，请手动复制', 'error');
+                }
+            } catch (err) {
+                showToast('复制失败，请手动复制', 'error');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // 加载评论
+        function loadComments() {
+            $.get(`/api/comments/${movieId}`)
+                .done(function(comments) {
+                    displayComments(comments);
+                })
+                .fail(function() {
+                    $('#commentsList').html('<div class="alert alert-danger">加载评论失败</div>');
+                });
+        }
+
+        // 显示评论列表
+        function displayComments(comments) {
+            if (comments.length === 0) {
+                $('#commentsList').html('<div class="text-center text-muted py-4">还没有评论，快来抢沙发吧！</div>');
+                return;
+            }
+
+            let html = '';
+            comments.forEach(comment => {
+                const avatar = comment.avatar ? `/uploads/avatars/${comment.avatar}` : '/images/default-avatar.png';
+                const nickname = comment.nickname || comment.username;
+                const date = new Date(comment.created_at).toLocaleString('zh-CN');
+                const isOwner = <%= user ? user.id : 'null' %> === comment.user_id;
+                const replyCountText = comment.reply_count > 0 ? `展开${comment.reply_count}条回复` : '';
+                
+                html += `
+                    <div class="comment-item card mb-3" data-comment-id="${comment.id}" data-user-id="${comment.user_id}" style="background-color: #14161b; border: 1px solid #1f2026;">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <img src="${avatar}" class="rounded-circle me-3" width="50" height="50" style="object-fit: cover;">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1" style="color: #ffffff; font-weight: 600;">${nickname}</h6>
+                                        <small style="color: #a8a8a8;">${date}</small>
+                                    </div>
+                                    <p class="mb-2 mt-2" style="color: #f0f0f0; line-height: 1.6;">${escapeHtml(comment.content)}</p>
+                                    <div class="comment-actions d-flex gap-3 align-items-center">
+                                        <button class="btn-link reply-btn" data-comment-id="${comment.id}" data-nickname="${nickname}">
+                                            <i class="bi bi-reply"></i> 回复
+                                        </button>
+                                        ${comment.reply_count > 0 ? `
+                                            <button class="btn-link toggle-replies-btn" data-comment-id="${comment.id}" data-loaded="false">
+                                                <i class="bi bi-chevron-down"></i> ${replyCountText}
+                                            </button>
+                                        ` : ''}
+                                    </div>
+                                    <!-- 回复列表容器 -->
+                                    <div class="replies-container mt-3" id="replies-${comment.id}" style="display: none;"></div>
+                                    <!-- 回复输入框 -->
+                                    <div class="reply-input-container mt-3" id="reply-input-${comment.id}" style="display: none;">
+                                        <div class="d-flex gap-2">
+                                            <input type="text" class="form-control reply-input" placeholder="写下你的回复..." style="background-color: #1c1e25; border: 1px solid #2a2c34; color: #f5f5f5;">
+                                            <button class="btn btn-sm btn-primary submit-reply-btn" data-comment-id="${comment.id}">发送</button>
+                                            <button class="btn btn-sm btn-outline-secondary cancel-reply-btn">取消</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            $('#commentsList').html(html);
+            
+            // 绑定右键菜单事件
+            bindContextMenu();
+            // 绑定回复按钮事件
+            bindReplyEvents();
+        }
+
+        // 发表评论
+        $('#commentForm').submit(function(e) {
+            e.preventDefault();
+            const content = $('#commentContent').val().trim();
+            
+            if (!content) {
+                showToast('请输入评论内容', 'error');
+                return;
+            }
+
+            $.post('/api/comments', {
+                movieId: movieId,
+                content: content
+            })
+            .done(function() {
+                showToast('评论成功');
+                $('#commentContent').val('');
+                loadComments();
+            })
+            .fail(function(xhr) {
+                if (xhr.status === 401) {
+                    showToast('请先登录', 'error');
+                    setTimeout(() => window.location.href = '/auth/login', 1500);
+                } else {
+                    showToast('评论失败', 'error');
+                }
+            });
+        });
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 绑定回复相关事件
+        function bindReplyEvents() {
+            // 回复按钮点击
+            $('.reply-btn').off('click').on('click', function() {
+                const commentId = $(this).data('comment-id');
+                const nickname = $(this).data('nickname');
+                $(`#reply-input-${commentId}`).show();
+                $(`#reply-input-${commentId} .reply-input`).attr('placeholder', `回复 @${nickname}...`).focus();
+            });
+            
+            // 取消回复
+            $('.cancel-reply-btn').off('click').on('click', function() {
+                $(this).closest('.reply-input-container').hide().find('.reply-input').val('');
+            });
+            
+            // 发送回复
+            $('.submit-reply-btn').off('click').on('click', function() {
+                const commentId = $(this).data('comment-id');
+                const content = $(`#reply-input-${commentId} .reply-input`).val().trim();
+                
+                if (!content) {
+                    showToast('请输入回复内容', 'error');
+                    return;
+                }
+                
+                $.post('/api/comments', {
+                    movieId: movieId,
+                    content: content,
+                    parentId: commentId
+                })
+                .done(function() {
+                    showToast('回复成功');
+                    $(`#reply-input-${commentId}`).hide().find('.reply-input').val('');
+                    // 重新加载该评论的回复
+                    loadReplies(commentId, true);
+                })
+                .fail(function(xhr) {
+                    if (xhr.status === 401) {
+                        showToast('请先登录', 'error');
+                        setTimeout(() => window.location.href = '/auth/login', 1500);
+                    } else {
+                        showToast('回复失败', 'error');
+                    }
+                });
+            });
+            
+            // 展开/收起回复
+            $('.toggle-replies-btn').off('click').on('click', function() {
+                const commentId = $(this).data('comment-id');
+                const loaded = $(this).data('loaded');
+                const $repliesContainer = $(`#replies-${commentId}`);
+                
+                if ($repliesContainer.is(':visible')) {
+                    // 收起回复
+                    $repliesContainer.slideUp();
+                    $(this).html('<i class="bi bi-chevron-down"></i> 展开回复');
+                } else {
+                    // 展开回复
+                    if (!loaded) {
+                        loadReplies(commentId);
+                        $(this).data('loaded', true);
+                    } else {
+                        $repliesContainer.slideDown();
+                    }
+                    $(this).html('<i class="bi bi-chevron-up"></i> 收起回复');
+                }
+            });
+        }
+
+        // 加载回复列表
+        function loadReplies(commentId, forceReload = false) {
+            const $container = $(`#replies-${commentId}`);
+            const $toggleBtn = $(`.toggle-replies-btn[data-comment-id="${commentId}"]`);
+            
+            if (forceReload || !$toggleBtn.data('loaded')) {
+                $container.html('<div class="text-center py-2"><div class="spinner-border spinner-border-sm" role="status"></div></div>');
+                
+                $.get(`/api/comments/${commentId}/replies`)
+                    .done(function(replies) {
+                        displayReplies(commentId, replies);
+                        $container.slideDown();
+                        $toggleBtn.html('<i class="bi bi-chevron-up"></i> 收起回复');
+                        if (forceReload) {
+                            // 更新回复数量
+                            const newCount = replies.length;
+                            $toggleBtn.html(`<i class="bi bi-chevron-up"></i> 收起${newCount}条回复`);
+                        }
+                    })
+                    .fail(function() {
+                        $container.html('<div class="text-danger small">加载回复失败</div>');
+                    });
+            } else {
+                $container.slideDown();
+                $toggleBtn.html('<i class="bi bi-chevron-up"></i> 收起回复');
+            }
+        }
+
+        // 显示回复列表
+        function displayReplies(commentId, replies) {
+            const $container = $(`#replies-${commentId}`);
+            
+            if (replies.length === 0) {
+                $container.html('<div class="text-muted small py-2">暂无回复</div>');
+                return;
+            }
+            
+            let html = '';
+            replies.forEach(reply => {
+                const avatar = reply.avatar ? `/uploads/avatars/${reply.avatar}` : '/images/default-avatar.png';
+                const nickname = reply.nickname || reply.username;
+                const date = new Date(reply.created_at).toLocaleString('zh-CN');
+                
+                html += `
+                    <div class="reply-item d-flex mb-3" data-comment-id="${reply.id}" data-user-id="${reply.user_id}" style="padding-left: 20px; border-left: 2px solid #2a2c34;">
+                        <img src="${avatar}" class="rounded-circle me-2" width="35" height="35" style="object-fit: cover;">
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h6 class="mb-1" style="color: #e0e0e0; font-size: 0.9rem; font-weight: 500;">${nickname}</h6>
+                                <small style="color: #999; font-size: 0.8rem;">${date}</small>
+                            </div>
+                            <p class="mb-0" style="color: #d0d0d0; font-size: 0.9rem; line-height: 1.5;">${escapeHtml(reply.content)}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            $container.html(html);
+            // 重新绑定右键菜单
+            bindContextMenu();
+        }
+
+        // 绑定右键菜单
+        function bindContextMenu() {
+            <% if (user) { %>
+            const currentUserId = <%= user.id %>;
+            
+            // 只在第一次调用时创建右键菜单
+            if ($('#contextMenu').length === 0) {
+                const contextMenu = $(`
+                    <div id="contextMenu" style="display: none; position: fixed; z-index: 10000; background: #1c1e25; border: 1px solid #2a2c34; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); min-width: 100px;">
+                        <div class="context-menu-item" data-action="delete" style="padding: 8px 16px; color: #ff4d4f; cursor: pointer; font-size: 0.9rem;">
+                            <i class="bi bi-trash"></i> 删除
+                        </div>
+                    </div>
+                `);
+                $('body').append(contextMenu);
+                
+                // 右键菜单项点击（只绑定一次）
+                $(document).on('click', '.context-menu-item', function() {
+                    const action = $(this).data('action');
+                    const commentId = $('#contextMenu').data('comment-id');
+                    
+                    if (action === 'delete') {
+                        if (confirm('确定要删除这条评论吗？')) {
+                            deleteComment(commentId);
+                        }
+                    }
+                    
+                    $('#contextMenu').hide();
+                });
+                
+                // 点击其他地方隐藏右键菜单（只绑定一次）
+                $(document).on('click', function(e) {
+                    if (!$(e.target).closest('#contextMenu').length) {
+                        $('#contextMenu').hide();
+                    }
+                });
+                
+                // 菜单项悬停效果（只绑定一次）
+                $(document).on('mouseenter', '.context-menu-item', function() {
+                    $(this).css('background-color', '#2a2c34');
+                }).on('mouseleave', '.context-menu-item', function() {
+                    $(this).css('background-color', 'transparent');
+                });
+            }
+            
+            // 移除旧的右键事件，重新绑定
+            $(document).off('contextmenu', '.comment-item, .reply-item');
+            
+            // 评论和回复的右键事件
+            $(document).on('contextmenu', '.comment-item, .reply-item', function(e) {
+                const itemUserId = parseInt($(this).data('user-id'));
+                
+                console.log('Right click - Current User:', currentUserId, 'Item User:', itemUserId);
+                
+                // 只有作者本人可以右键删除
+                if (itemUserId === currentUserId) {
+                    e.preventDefault();
+                    const commentId = $(this).data('comment-id');
+                    
+                    $('#contextMenu').css({
+                        left: e.pageX + 'px',
+                        top: e.pageY + 'px',
+                        display: 'block'
+                    }).data('comment-id', commentId);
+                    
+                    return false;
+                }
+            });
+            <% } %>
+        }
+
+        // 删除评论或回复
+        function deleteComment(commentId) {
+            $.ajax({
+                url: `/api/comments/${commentId}`,
+                type: 'DELETE',
+                success: function() {
+                    showToast('删除成功');
+                    loadComments(); // 重新加载所有评论
+                },
+                error: function() {
+                    showToast('删除失败', 'error');
+                }
+            });
+        }
+
+        // 显示提示
+        function showToast(message, type = 'success') {
+            const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+            const toast = $(`
+                <div class="position-fixed start-50 translate-middle-x" style="top: 20px; z-index: 9999;">
+                    <div class="alert ${bgClass} text-white text-center alert-dismissible fade show" role="alert" style="min-width: 250px;">
+                        ${message}
+                    </div>
+                </div>
+            `);
+            $('body').append(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

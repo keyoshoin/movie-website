@@ -1,0 +1,65 @@
+<header class="site-header">
+    <div class="container-fluid">
+        <div class="row align-items-center py-2">
+            <div class="col-auto d-flex align-items-center gap-3">
+                <a href="/" class="brand">
+                    <span class="brand-logo">N</span>
+                </a>
+                <div class="brand-text d-none d-md-block">
+                    <a href="/" class="logo-link">电影世界</a>
+                    <a href="/#latest" class="nav-pill">最新上映</a>
+                    <a href="/#top-rated" class="nav-pill">高分电影</a>
+                    <a href="/movies" class="nav-pill">所有电影</a>
+                </div>
+            </div>
+
+            <div class="col d-flex justify-content-center">
+                <form action="/movies" method="GET" class="search-form w-75">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="搜索电影、演员或分类..." id="searchInput">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-auto text-end d-flex align-items-center justify-content-end gap-2">
+                <% if (user) { %>
+                    <!-- 管理员控制台入口 -->
+                    <% if (user.role === 'admin') { %>
+                        <a href="/admin/dashboard" class="btn btn-sm btn-gradient-admin" title="管理员控制台">
+                            <i class="bi bi-shield-check"></i> 管理后台
+                        </a>
+                    <% } %>
+                    
+                    <!-- 个人中心入口：有头像显示头像，无头像显示图标 -->
+                    <!-- 修改了 class：增加了 d-flex align-items-center gap-2 text-light -->
+                    <a href="/user/profile" class="text-decoration-none d-flex align-items-center gap-2 text-light" title="个人中心">
+                        
+                        <% if (user.avatar) { %>
+                            <!-- 有头像 -->
+                            <img src="/uploads/avatars/<%= user.avatar %>" 
+                                    alt="<%= user.nickname || user.username %>" 
+                                    class="rounded-circle border border-light"
+                                    style="width: 38px; height: 38px; object-fit: cover;">
+                        <% } else { %>
+                            <!-- 无头像 (默认图标) -->
+                            <i class="bi bi-person-circle" style="font-size: 1.8rem;"></i>
+                        <% } %>
+
+                        <!-- ★★★ 新增：显示昵称 (如果没有昵称则显示用户名) ★★★ -->
+                        <span class="fw-bold"><%= user.nickname || user.username %></span>
+                    </a>
+                    
+                    <!-- 登出按钮 -->
+                    <a href="/auth/logout" class="btn btn-sm btn-outline-danger ms-2">登出</a>
+                <% } else { %>
+                    <a href="/auth/login" class="btn btn-sm btn-outline-light me-2">登录</a>
+                    <a href="/auth/register" class="btn btn-sm btn-primary">注册</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</header>
+

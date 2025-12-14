@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="admin-dashboard" style="background-color: #14161b; border-radius: 12px; padding: 24px; border: 1px solid #1f2026;">
+                    
+                    <!-- 管理员标题 -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 style="color: #f5f5f5; margin: 0;">
+                            <i class="bi bi-shield-check"></i> 管理员控制台
+                        </h2>
+                        <span style="color: #667eea; font-size: 0.9rem;">
+                            <i class="bi bi-person-badge"></i> <%= user.nickname %>
+                        </span>
+                    </div>
+
+                    <!-- 统计卡片 -->
+                    <div class="row mb-4">
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stat-card stat-card-clickable" data-action="filter-active" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; cursor: pointer;">
+                                <div style="font-size: 2rem; font-weight: bold;"><%= stats.activeMovies %></div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;"><i class="bi bi-film"></i> 上架电影</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stat-card stat-card-clickable" data-action="filter-inactive" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 10px; color: white; cursor: pointer;">
+                                <div style="font-size: 2rem; font-weight: bold;"><%= stats.inactiveMovies %></div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;"><i class="bi bi-eye-slash"></i> 下架电影</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stat-card stat-card-clickable" data-action="show-users" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px; border-radius: 10px; color: white; cursor: pointer;">
+                                <div style="font-size: 2rem; font-weight: bold;"><%= stats.totalUsers %></div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;"><i class="bi bi-people"></i> 注册用户</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6 mb-3">
+                            <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); padding: 20px; border-radius: 10px; color: white;">
+                                <div style="font-size: 2rem; font-weight: bold;"><%= stats.totalComments %></div>
+                                <div style="font-size: 0.9rem; opacity: 0.9;"><i class="bi bi-chat-dots"></i> 评论总数</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 选项卡 -->
+                    <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist" style="border-bottom: 2px solid #2a2c34;">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="movies-tab" data-bs-toggle="tab" data-bs-target="#movies" type="button" role="tab">
+                                <i class="bi bi-film"></i> 电影管理
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab">
+                                <i class="bi bi-chat-left-text"></i> 评论管理
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                                <i class="bi bi-people"></i> 用户管理
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- 选项卡内容 -->
+                    <div class="tab-content" id="adminTabsContent">
+                        
+                        <!-- 电影管理 -->
+                        <div class="tab-pane fade show active" id="movies" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 style="color: #f5f5f5; margin: 0;">电影列表</h5>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-sm btn-gradient-admin" data-bs-toggle="modal" data-bs-target="#addMovieModal">
+                                        <i class="bi bi-plus-circle"></i> 添加电影
+                                    </button>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-outline-light filter-btn" data-filter="all">全部</button>
+                                        <button type="button" class="btn btn-sm btn-outline-success filter-btn" data-filter="active">已上架</button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger filter-btn" data-filter="inactive">已下架</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover" style="background-color: #1c1e25;">
+                                    <thead style="border-bottom: 2px solid #2a2c34;">
+                                        <tr>
+                                            <th style="width: 60px;">ID</th>
+                                            <th>电影名称</th>
+                                            <th style="width: 100px;">评分</th>
+                                            <th style="width: 100px;">评论数</th>
+                                            <th style="width: 100px;">收藏数</th>
+                                            <th style="width: 100px;">状态</th>
+                                            <th style="width: 150px;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="moviesTableBody">
+                                        <% movies.forEach(movie => { %>
+                                        <tr class="movie-row" data-status="<%= movie.status %>" data-movie-id="<%= movie.id %>">
+                                            <td style="color: #a8a8a8;"><%= movie.id %></td>
+                                            <td style="color: #f5f5f5;"><%= movie.title %></td>
+                                            <td>
+                                                <span style="color: #ffc107;">
+                                                    <i class="bi bi-star-fill"></i> <%= movie.rating %>
+                                                </span>
+                                            </td>
+                                            <td style="color: #a8a8a8;"><%= movie.comment_count || 0 %></td>
+                                            <td style="color: #a8a8a8;"><%= movie.favorite_count || 0 %></td>
+                                            <td>
+                                                <% if (movie.status === 'active') { %>
+                                                <span class="badge bg-success">已上架</span>
+                                                <% } else { %>
+                                                <span class="badge bg-secondary">已下架</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if (movie.status === 'active') { %>
+                                                <button class="btn btn-sm btn-outline-danger toggle-status-btn" data-movie-id="<%= movie.id %>" data-status="inactive">
+                                                    <i class="bi bi-eye-slash"></i> 下架
+                                                </button>
+                                                <% } else { %>
+                                                <button class="btn btn-sm btn-outline-success toggle-status-btn" data-movie-id="<%= movie.id %>" data-status="active">
+                                                    <i class="bi bi-eye"></i> 上架
+                                                </button>
+                                                <% } %>
+                                                <button class="btn btn-sm btn-outline-warning edit-movie-btn ms-1" 
+                                                        data-movie-id="<%= movie.id %>">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger delete-movie-btn ms-1" 
+                                                        data-movie-id="<%= movie.id %>" 
+                                                        data-movie-title="<%= movie.title %>">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <a href="/movies/<%= movie.id %>" class="btn btn-sm btn-outline-primary ms-1" target="_blank">
+                                                    <i class="bi bi-box-arrow-up-right"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 评论管理 -->
+                        <div class="tab-pane fade" id="comments" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 style="color: #f5f5f5; margin: 0;">评论管理</h5>
+                                <div class="d-flex align-items-center gap-3">
+                                    <label style="color: #a8a8a8; margin: 0;">选择电影：</label>
+                                    <select id="movieSelector" class="form-select" style="width: 300px; background-color: #1c1e25; color: #f5f5f5; border: 1px solid #2a2c34;">
+                                        <option value="">-- 全部评论 --</option>
+                                        <% movies.filter(m => m.status === 'active').forEach(movie => { %>
+                                        <option value="<%= movie.id %>"><%= movie.title %> (<%= movie.comment_count || 0 %>条评论)</option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="commentsContainer">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">加载中...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <nav id="commentsPagination" class="mt-3" style="display: none;">
+                                <ul class="pagination justify-content-center"></ul>
+                            </nav>
+                        </div>
+
+                        <!-- 用户管理 -->
+                        <div class="tab-pane fade" id="users" role="tabpanel">
+                            <h5 style="color: #f5f5f5; margin-bottom: 20px;">用户列表</h5>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover" style="background-color: #1c1e25;">
+                                    <thead style="border-bottom: 2px solid #2a2c34;">
+                                        <tr>
+                                            <th style="width: 60px;">ID</th>
+                                            <th style="width: 80px;">头像</th>
+                                            <th>用户名</th>
+                                            <th>昵称</th>
+                                            <th>邮箱</th>
+                                            <th style="width: 120px;">注册时间</th>
+                                            <th style="width: 100px;">操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="usersTableBody">
+                                        <tr>
+                                            <td colspan="7" class="text-center py-4">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">加载中...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加电影模态框 -->
+    <div class="modal fade" id="addMovieModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #1c1e25; color: #f5f5f5;">
+                <div class="modal-header" style="border-bottom: 1px solid #2a2c34;">
+                    <h5 class="modal-title"><i class="bi bi-film"></i> 添加电影</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addMovieForm" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">电影名称 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="title" required style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">导演</label>
+                                <input type="text" class="form-control" name="director" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">年份</label>
+                                <input type="number" class="form-control" name="year" min="1900" max="2100" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">评分</label>
+                                <input type="number" class="form-control" name="rating" min="0" max="10" step="0.1" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">时长（分钟）</label>
+                                <input type="number" class="form-control" name="duration" min="1" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">类型</label>
+                                <input type="text" class="form-control" name="genre" placeholder="例如: 动作, 剧情" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">国家/地区</label>
+                                <input type="text" class="form-control" name="country" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">简介</label>
+                            <textarea class="form-control" name="description" rows="3" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">海报</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="file" class="form-control" id="posterFile" name="poster" accept="image/*" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                    <small class="form-text" style="color: #a0a0a0;">上传本地图片（最大5MB）</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="posterUrl" name="poster_url" placeholder="或输入图片URL" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                    <small class="form-text" style="color: #a0a0a0;">或使用网络图片链接</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">视频文件</label>
+                            <input type="file" class="form-control" id="videoFile" name="video" accept="video/*" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            <small class="form-text" style="color: #a0a0a0;">上传视频文件（最大500MB，支持 mp4/webm/ogg/mkv）。上传后将自动以电影ID命名。</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">状态</label>
+                            <select class="form-select" name="status" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                <option value="active" selected>上架</option>
+                                <option value="inactive">下架</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #2a2c34;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-gradient-admin" id="submitAddMovie">
+                        <i class="bi bi-check-circle"></i> 添加
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑电影模态框 -->
+    <div class="modal fade" id="editMovieModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: #1c1e25; color: #f5f5f5;">
+                <div class="modal-header" style="border-bottom: 1px solid #2a2c34;">
+                    <h5 class="modal-title"><i class="bi bi-pencil"></i> 编辑电影</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editMovieForm" enctype="multipart/form-data">
+                        <input type="hidden" id="editMovieId" name="movieId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">电影名称 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="editTitle" name="title" required style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">导演</label>
+                                <input type="text" class="form-control" id="editDirector" name="director" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">年份</label>
+                                <input type="number" class="form-control" id="editYear" name="year" min="1900" max="2100" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">评分</label>
+                                <input type="number" class="form-control" id="editRating" name="rating" min="0" max="10" step="0.1" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">时长（分钟）</label>
+                                <input type="number" class="form-control" id="editDuration" name="duration" min="1" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">类型</label>
+                                <input type="text" class="form-control" id="editGenre" name="genre" placeholder="例如: 动作, 剧情" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">国家/地区</label>
+                                <input type="text" class="form-control" id="editCountry" name="country" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">简介</label>
+                            <textarea class="form-control" id="editDescription" name="description" rows="3" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">海报</label>
+                            <div class="mb-2" id="currentPosterPreview" style="display: none;">
+                                <img id="currentPosterImg" src="" alt="当前海报" style="max-width: 200px; border-radius: 8px;">
+                                <p class="small mt-1" style="color: #a0a0a0;">当前海报</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="file" class="form-control" id="editPosterFile" name="poster" accept="image/*" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                    <small class="form-text" style="color: #a0a0a0;">上传新图片（最大5MB）</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" id="editPosterUrl" name="poster_url" placeholder="或输入新图片URL" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                    <small class="form-text" style="color: #a0a0a0;">或使用网络图片链接</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">视频文件</label>
+                            <input type="file" class="form-control" id="editVideoFile" name="video" accept="video/*" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                            <small class="form-text" style="color: #a0a0a0;">上传新视频替换当前视频（最大500MB）。留空则保持原视频不变。</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">状态</label>
+                            <select class="form-select" id="editStatus" name="status" style="background-color: #14161b; color: #f5f5f5; border-color: #2a2c34;">
+                                <option value="active">上架</option>
+                                <option value="inactive">下架</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid #2a2c34;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-gradient-admin" id="submitEditMovie">
+                        <i class="bi bi-check-circle"></i> 保存更改
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/footer') %>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 统计卡片点击事件
+            $('.stat-card-clickable').click(function() {
+                const action = $(this).data('action');
+                
+                if (action === 'filter-active') {
+                    // 切换到电影管理标签并筛选已上架
+                    $('#movies-tab').tab('show');
+                    $('.filter-btn').removeClass('active');
+                    $('.filter-btn[data-filter="active"]').addClass('active');
+                    $('.movie-row').hide();
+                    $('.movie-row[data-status="active"]').show();
+                } else if (action === 'filter-inactive') {
+                    // 切换到电影管理标签并筛选已下架
+                    $('#movies-tab').tab('show');
+                    $('.filter-btn').removeClass('active');
+                    $('.filter-btn[data-filter="inactive"]').addClass('active');
+                    $('.movie-row').hide();
+                    $('.movie-row[data-status="inactive"]').show();
+                } else if (action === 'show-users') {
+                    // 切换到用户管理标签
+                    $('#users-tab').tab('show');
+                }
+            });
+
+            // 加载用户列表
+            $('#users-tab').on('shown.bs.tab', function() {
+                loadUsers();
+            });
+
+            function loadUsers() {
+                $.get('/admin/api/users')
+                    .done(function(users) {
+                        displayUsers(users);
+                    })
+                    .fail(function() {
+                        $('#usersTableBody').html('<tr><td colspan="7" class="text-center text-danger py-4">加载用户列表失败</td></tr>');
+                    });
+            }
+
+            function displayUsers(users) {
+                if (users.length === 0) {
+                    $('#usersTableBody').html('<tr><td colspan="7" class="text-center text-muted py-4">暂无用户</td></tr>');
+                    return;
+                }
+
+                let html = '';
+                users.forEach(user => {
+                    const avatar = user.avatar ? `/uploads/avatars/${user.avatar}` : '/images/default-avatar.png';
+                    const date = new Date(user.created_at).toLocaleDateString('zh-CN');
+                    
+                    html += `
+                        <tr>
+                            <td style="color: #a8a8a8;">${user.id}</td>
+                            <td>
+                                <img src="${avatar}" class="rounded-circle" width="40" height="40" style="object-fit: cover;">
+                            </td>
+                            <td style="color: #f5f5f5;">${escapeHtml(user.username)}</td>
+                            <td style="color: #d0d0d0;">${escapeHtml(user.nickname || '-')}</td>
+                            <td style="color: #a8a8a8;">${escapeHtml(user.email)}</td>
+                            <td style="color: #a8a8a8;">${date}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger delete-user-btn" data-user-id="${user.id}" data-username="${escapeHtml(user.username)}">
+                                    <i class="bi bi-trash"></i> 注销
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                $('#usersTableBody').html(html);
+                
+                // 绑定删除用户事件
+                $('.delete-user-btn').click(function() {
+                    const userId = $(this).data('user-id');
+                    const username = $(this).data('username');
+                    
+                    if (confirm(`确定要注销用户 "${username}" 吗？\n\n此操作将删除该用户的所有数据，包括评论、收藏等，且无法恢复！`)) {
+                        $.ajax({
+                            url: `/admin/api/users/${userId}`,
+                            type: 'DELETE',
+                            success: function() {
+                                showToast('用户已注销');
+                                loadUsers();
+                            },
+                            error: function() {
+                                showToast('注销失败', 'error');
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 提交添加电影表单
+            $('#submitAddMovie').click(function() {
+                const form = $('#addMovieForm')[0];
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const formData = new FormData(form);
+                
+                // 如果有文件上传，移除URL字段；如果没有文件，移除文件字段
+                const posterFile = $('#posterFile')[0].files[0];
+                const posterUrl = $('#posterUrl').val().trim();
+                
+                if (posterFile) {
+                    formData.delete('poster_url');
+                } else if (posterUrl) {
+                    formData.delete('poster');
+                } else {
+                    formData.delete('poster');
+                    formData.delete('poster_url');
+                }
+
+                $.ajax({
+                    url: '/admin/api/movies',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        showToast('电影添加成功！');
+                        $('#addMovieModal').modal('hide');
+                        setTimeout(() => location.reload(), 1000);
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.message || '添加电影失败';
+                        showToast(error, 'error');
+                    }
+                });
+            });
+
+            // 编辑电影
+            $(document).on('click', '.edit-movie-btn', function() {
+                const movieId = $(this).data('movie-id');
+                const $row = $(`.movie-row[data-movie-id="${movieId}"]`);
+                
+                // 从表格行中获取电影信息
+                const title = $row.find('td:eq(1)').text().trim();
+                const rating = $row.find('td:eq(2)').text().replace('★', '').trim();
+                const status = $row.data('status');
+                
+                // 填充表单基本信息
+                $('#editMovieId').val(movieId);
+                $('#editTitle').val(title);
+                $('#editRating').val(rating);
+                $('#editStatus').val(status);
+                
+                // 获取完整电影信息
+                $.get(`/movies/api/${movieId}`)
+                    .done(function(movie) {
+                        $('#editTitle').val(movie.title);
+                        $('#editDirector').val(movie.director || '');
+                        $('#editYear').val(movie.year || '');
+                        $('#editRating').val(movie.rating || '');
+                        $('#editDuration').val(movie.duration || '');
+                        $('#editGenre').val(Array.isArray(movie.genre) ? movie.genre.join(', ') : movie.genre || '');
+                        $('#editCountry').val(movie.country || '');
+                        $('#editDescription').val(movie.description || '');
+                        $('#editPosterUrl').val(movie.poster_url || '');
+                        $('#editStatus').val(movie.status || 'active');
+                        
+                        // 显示当前海报（优先使用本地图片）
+                        if (movie.poster_url || movie.id) {
+                            const localPoster = `/images/${movie.id}.jpg`;
+                            const fallbackPoster = movie.poster_url || '/images/index1.jpg';
+                            
+                            // 创建临时图片对象测试本地图片是否存在
+                            const testImg = new Image();
+                            testImg.onload = function() {
+                                $('#currentPosterImg').attr('src', localPoster);
+                                $('#currentPosterPreview').show();
+                            };
+                            testImg.onerror = function() {
+                                $('#currentPosterImg').attr('src', fallbackPoster);
+                                $('#currentPosterPreview').show();
+                            };
+                            testImg.src = localPoster;
+                        } else {
+                            $('#currentPosterPreview').hide();
+                        }
+                        
+                        $('#editMovieModal').modal('show');
+                    })
+                    .fail(function() {
+                        showToast('获取电影信息失败', 'error');
+                    });
+            });
+
+            // 提交编辑电影表单
+            $('#submitEditMovie').click(function() {
+                const form = $('#editMovieForm')[0];
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const movieId = $('#editMovieId').val();
+                const formData = new FormData(form);
+                
+                // 处理海报上传逻辑
+                const posterFile = $('#editPosterFile')[0].files[0];
+                const posterUrl = $('#editPosterUrl').val().trim();
+                
+                if (posterFile) {
+                    formData.delete('poster_url');
+                } else if (posterUrl) {
+                    formData.delete('poster');
+                } else {
+                    formData.delete('poster');
+                    formData.delete('poster_url');
+                }
+
+                $.ajax({
+                    url: `/admin/api/movies/${movieId}`,
+                    method: 'PUT',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        showToast('电影更新成功！');
+                        $('#editMovieModal').modal('hide');
+                        setTimeout(() => location.reload(), 1000);
+                    },
+                    error: function(xhr) {
+                        const error = xhr.responseJSON?.message || '更新电影失败';
+                        showToast(error, 'error');
+                    }
+                });
+            });
+
+            // 删除电影
+            $(document).on('click', '.delete-movie-btn', function() {
+                const movieId = $(this).data('movie-id');
+                const movieTitle = $(this).data('movie-title');
+                
+                if (confirm(`确定要删除电影 "${movieTitle}" 吗？\n\n此操作将删除该电影的所有相关数据（包括评论、收藏等），且无法恢复！`)) {
+                    $.ajax({
+                        url: `/admin/api/movies/${movieId}`,
+                        method: 'DELETE',
+                        success: function(response) {
+                            showToast('电影已删除');
+                            $(`.movie-row[data-movie-id="${movieId}"]`).fadeOut(300, function() {
+                                $(this).remove();
+                            });
+                        },
+                        error: function() {
+                            showToast('删除电影失败', 'error');
+                        }
+                    });
+                }
+            });
+
+            // 电影状态切换
+            $('.toggle-status-btn').click(function() {
+                const movieId = $(this).data('movie-id');
+                const newStatus = $(this).data('status');
+                const btn = $(this);
+                
+                if (confirm(`确定要${newStatus === 'active' ? '上架' : '下架'}这部电影吗？`)) {
+                    $.ajax({
+                        url: `/admin/api/movies/${movieId}/status`,
+                        type: 'PUT',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ status: newStatus }),
+                        success: function() {
+                            showToast('操作成功');
+                            setTimeout(() => location.reload(), 1000);
+                        },
+                        error: function() {
+                            showToast('操作失败', 'error');
+                        }
+                    });
+                }
+            });
+
+            // 电影筛选
+            $('.filter-btn').click(function() {
+                const filter = $(this).data('filter');
+                $('.filter-btn').removeClass('active');
+                $(this).addClass('active');
+                
+                if (filter === 'all') {
+                    $('.movie-row').show();
+                } else {
+                    $('.movie-row').hide();
+                    $(`.movie-row[data-status="${filter}"]`).show();
+                }
+            });
+
+            // 加载评论列表
+            let currentPage = 1;
+            let selectedMovieId = '';
+            
+            $('#comments-tab').on('shown.bs.tab', function() {
+                loadComments(1);
+            });
+
+            // 电影选择器变化事件
+            $('#movieSelector').on('change', function() {
+                selectedMovieId = $(this).val();
+                loadComments(1);
+            });
+
+            function loadComments(page) {
+                const url = selectedMovieId 
+                    ? `/admin/api/comments?page=${page}&limit=20&movieId=${selectedMovieId}`
+                    : `/admin/api/comments?page=${page}&limit=20`;
+                    
+                $.get(url)
+                    .done(function(data) {
+                        displayComments(data.comments);
+                        displayPagination(data.page, data.totalPages);
+                        currentPage = page;
+                    })
+                    .fail(function() {
+                        $('#commentsContainer').html('<div class="alert alert-danger">加载评论失败</div>');
+                    });
+            }
+
+            function displayComments(comments) {
+                if (comments.length === 0) {
+                    $('#commentsContainer').html('<div class="text-center text-muted py-4">暂无评论</div>');
+                    return;
+                }
+
+                let html = '';
+                comments.forEach(comment => {
+                    const date = new Date(comment.created_at).toLocaleString('zh-CN');
+                    const avatar = comment.avatar ? `/uploads/avatars/${comment.avatar}` : '/images/default-avatar.png';
+                    
+                    html += `
+                        <div class="card mb-3 comment-card" data-comment-id="${comment.id}" style="background-color: #1c1e25; border: 1px solid #2a2c34;">
+                            <div class="card-body">
+                                <div class="d-flex">
+                                    <img src="${avatar}" class="rounded-circle me-3" width="50" height="50" style="object-fit: cover;">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <div>
+                                                <h6 style="color: #f5f5f5; margin-bottom: 4px;">${escapeHtml(comment.nickname || comment.username)}</h6>
+                                                <small style="color: #a8a8a8;">评论电影: ${escapeHtml(comment.movie_title)}</small>
+                                            </div>
+                                            <small style="color: #a8a8a8;">${date}</small>
+                                        </div>
+                                        <p style="color: #d0d0d0; margin-top: 12px; margin-bottom: 12px;">${escapeHtml(comment.content)}</p>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <button class="btn btn-sm btn-outline-danger delete-comment-btn" data-comment-id="${comment.id}">
+                                                <i class="bi bi-trash"></i> 删除评论
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-info load-replies-btn" data-comment-id="${comment.id}">
+                                                <i class="bi bi-reply"></i> 查看回复
+                                            </button>
+                                        </div>
+                                        <div class="replies-container-admin mt-3" id="admin-replies-${comment.id}" style="display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                $('#commentsContainer').html(html);
+                
+                // 绑定删除评论事件
+                $('.delete-comment-btn').click(function() {
+                    const commentId = $(this).data('comment-id');
+                    if (confirm('确定要删除这条评论吗？这将同时删除所有回复。')) {
+                        $.ajax({
+                            url: `/admin/api/comments/${commentId}`,
+                            type: 'DELETE',
+                            success: function() {
+                                showToast('删除成功');
+                                loadComments(currentPage);
+                            },
+                            error: function() {
+                                showToast('删除失败', 'error');
+                            }
+                        });
+                    }
+                });
+                
+                // 绑定加载回复事件
+                $('.load-replies-btn').click(function() {
+                    const commentId = $(this).data('comment-id');
+                    const $repliesContainer = $(`#admin-replies-${commentId}`);
+                    const $btn = $(this);
+                    
+                    if ($repliesContainer.is(':visible')) {
+                        // 隐藏回复
+                        $repliesContainer.slideUp();
+                        $btn.html('<i class="bi bi-reply"></i> 查看回复');
+                    } else {
+                        // 加载回复
+                        $btn.html('<i class="bi bi-hourglass-split"></i> 加载中...');
+                        $.get(`/api/comments/${commentId}/replies`)
+                            .done(function(replies) {
+                                displayReplies(commentId, replies);
+                                $repliesContainer.slideDown();
+                                $btn.html(`<i class="bi bi-reply-fill"></i> 隐藏回复 (${replies.length})`);
+                            })
+                            .fail(function() {
+                                showToast('加载回复失败', 'error');
+                                $btn.html('<i class="bi bi-reply"></i> 查看回复');
+                            });
+                    }
+                });
+            }
+            
+            function displayReplies(commentId, replies) {
+                const $container = $(`#admin-replies-${commentId}`);
+                
+                if (replies.length === 0) {
+                    $container.html('<div class="text-muted small py-2" style="padding-left: 20px;">暂无回复</div>');
+                    return;
+                }
+                
+                let html = '<div style="border-left: 2px solid #667eea; padding-left: 20px; margin-top: 10px;">';
+                replies.forEach(reply => {
+                    const date = new Date(reply.created_at).toLocaleString('zh-CN');
+                    const avatar = reply.avatar ? `/uploads/avatars/${reply.avatar}` : '/images/default-avatar.png';
+                    
+                    html += `
+                        <div class="d-flex mb-3 p-2" style="background-color: #14161b; border-radius: 6px;">
+                            <img src="${avatar}" class="rounded-circle me-2" width="35" height="35" style="object-fit: cover;">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 style="color: #e0e0e0; font-size: 0.9rem; margin-bottom: 4px;">${escapeHtml(reply.nickname || reply.username)}</h6>
+                                    <small style="color: #999; font-size: 0.8rem;">${date}</small>
+                                </div>
+                                <p style="color: #d0d0d0; font-size: 0.9rem; margin-bottom: 8px;">${escapeHtml(reply.content)}</p>
+                                <button class="btn btn-sm btn-outline-danger delete-reply-btn" data-comment-id="${reply.id}">
+                                    <i class="bi bi-trash"></i> 删除回复
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                $container.html(html);
+                
+                // 绑定删除回复事件
+                $('.delete-reply-btn').click(function() {
+                    const replyId = $(this).data('comment-id');
+                    if (confirm('确定要删除这条回复吗？')) {
+                        $.ajax({
+                            url: `/admin/api/comments/${replyId}`,
+                            type: 'DELETE',
+                            success: function() {
+                                showToast('删除成功');
+                                // 重新加载该评论的回复
+                                const $btn = $(`.load-replies-btn[data-comment-id="${commentId}"]`);
+                                $btn.html('<i class="bi bi-hourglass-split"></i> 加载中...');
+                                $.get(`/api/comments/${commentId}/replies`)
+                                    .done(function(replies) {
+                                        displayReplies(commentId, replies);
+                                        $btn.html(`<i class="bi bi-reply-fill"></i> 隐藏回复 (${replies.length})`);
+                                    });
+                            },
+                            error: function() {
+                                showToast('删除失败', 'error');
+                            }
+                        });
+                    }
+                });
+            }
+
+            function displayPagination(current, total) {
+                if (total <= 1) {
+                    $('#commentsPagination').hide();
+                    return;
+                }
+                
+                $('#commentsPagination').show();
+                let html = '';
+                
+                // 上一页
+                html += `<li class="page-item ${current === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${current - 1}">上一页</a>
+                </li>`;
+                
+                // 页码
+                for (let i = 1; i <= total; i++) {
+                    if (i === 1 || i === total || (i >= current - 2 && i <= current + 2)) {
+                        html += `<li class="page-item ${i === current ? 'active' : ''}">
+                            <a class="page-link" href="#" data-page="${i}">${i}</a>
+                        </li>`;
+                    } else if (i === current - 3 || i === current + 3) {
+                        html += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+                    }
+                }
+                
+                // 下一页
+                html += `<li class="page-item ${current === total ? 'disabled' : ''}">
+                    <a class="page-link" href="#" data-page="${current + 1}">下一页</a>
+                </li>`;
+                
+                $('#commentsPagination .pagination').html(html);
+                
+                // 绑定分页点击事件
+                $('#commentsPagination .page-link').click(function(e) {
+                    e.preventDefault();
+                    const page = parseInt($(this).data('page'));
+                    if (page && page !== current) {
+                        loadComments(page);
+                    }
+                });
+            }
+
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+
+            function showToast(message, type = 'success') {
+                const bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                const toast = $(`
+                    <div class="position-fixed top-0 start-50 translate-middle-x mt-3" style="z-index: 9999;">
+                        <div class="alert ${bgClass} text-white alert-dismissible fade show" role="alert">
+                            ${message}
+                        </div>
+                    </div>
+                `);
+                $('body').append(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+        });
+    </script>
+    
+    <style>
+        .nav-tabs .nav-link {
+            background-color: #1c1e25;
+            border: 1px solid #2a2c34;
+            color: #a8a8a8;
+            border-radius: 8px 8px 0 0;
+            margin-right: 4px;
+        }
+        
+        .nav-tabs .nav-link:hover {
+            color: #f5f5f5;
+            background-color: #252730;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: #14161b;
+            border-bottom-color: transparent;
+            color: #667eea;
+        }
+        
+        .table-dark {
+            --bs-table-bg: #1c1e25;
+            --bs-table-striped-bg: #1a1c22;
+            --bs-table-hover-bg: #252730;
+            color: #f5f5f5;
+        }
+        
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-card-clickable {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card-clickable::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .stat-card-clickable:active::after {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .pagination .page-link {
+            background-color: #1c1e25;
+            border-color: #2a2c34;
+            color: #f5f5f5;
+        }
+        
+        .pagination .page-link:hover {
+            background-color: #252730;
+            color: #667eea;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+    </style>
+</body>
+</html>

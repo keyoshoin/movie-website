@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : '电影播放 - 电影网站' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* 播放页专属样式 */
+        body {
+            background: #0f1419;
+        }
+        .player-container {
+            width: 100%;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 60px);
+        }
+        .player-wrapper {
+            width: 100%;
+            max-width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .player-wrapper video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .player-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #888;
+            font-size: 2rem;
+            gap: 20px;
+        }
+        .movie-info-panel {
+            background: #1a1c22;
+            padding: 30px;
+            color: #e0e0e0;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .movie-title-large {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .movie-meta-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .meta-item strong {
+            color: #fff;
+            min-width: 80px;
+        }
+        .movie-description-text {
+            line-height: 1.8;
+            color: #c0c0c0;
+            margin-top: 20px;
+        }
+        .back-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <%- include('../partials/header') %>
+    
+    <div class="container-fluid">
+        <div class="player-container">
+            <div class="w-100">
+                <div class="player-wrapper">
+                    <% if (typeof videoUrl !== 'undefined' && videoUrl) { %>
+                        <video id="videoPlayer" controls preload="metadata">
+                            <source src="<%= videoUrl %>" type="video/mp4">
+                            您的浏览器不支持内置视频播放，请下载后使用本地播放器观看。
+                        </video>
+                    <% } else { %>
+                        <div class="player-placeholder">
+                            <i class="bi bi-exclamation-circle" style="font-size:36px;color:#e9e9e9"></i>
+                            <span>未找到对应的视频文件：<%= movie.id %></span>
+                            <small style="color:#999; display:block; margin-top:10px">请将视频文件放入项目根目录下的 <strong>vedio</strong> 文件夹，文件名与影片 id 对应（如 123.mp4）。</small>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4 mb-5">
+        <div class="back-button">
+            <a href="/movies/<%= movie.id %>" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> 返回详情页
+            </a>
+        </div>
+
+        <div class="movie-info-panel">
+            <h1 class="movie-title-large"><%= movie.title %></h1>
+            
+            <div class="movie-meta-info">
+                <div class="meta-item">
+                    <strong>年份：</strong>
+                    <span><%= movie.year || '未知' %></span>
+                </div>
+                <div class="meta-item">
+                    <strong>地区：</strong>
+                    <span><%= movie.country || '未知' %></span>
+                </div>
+                <div class="meta-item">
+                    <strong>评分：</strong>
+                    <span><i class="bi bi-star-fill" style="color: #ffc107;"></i> <%= movie.rating %></span>
+                </div>
+                <% 
+                    let genres = [];
+                    if (Array.isArray(movie.genre)) {
+                        genres = movie.genre;
+                    } else if (typeof movie.genre === 'string') {
+                        genres = movie.genre.split(',').map(s => s.trim()).filter(Boolean);
+                    }
+                %>
+                <% if (genres.length > 0) { %>
+                    <div class="meta-item">
+                        <strong>类型：</strong>
+                        <span><%= genres.join(' / ') %></span>
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="detail-meta-lines">
+                <div><strong>导演：</strong> <%= movie.director || '未知' %></div>
+                <div><strong>状态：</strong> <%= movie.status || '已完结' %></div>
+            </div>
+
+            <div class="movie-description-text">
+                <h5 style="color: #fff; margin-top: 20px; margin-bottom: 10px;">简介</h5>
+                <% if (movie.description && movie.description.trim().length > 0) { %>
+                    <p><%= movie.description %></p>
+                <% } else { %>
+                    <p style="color: #888;">暂无简介。</p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('../partials/footer') %>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

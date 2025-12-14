@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof title !== 'undefined' ? title : '用户注册 - 电影网站' %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<!-- 1. Body: 黑色背景，Flex布局，最小全屏高度 -->
+<body class="d-flex flex-column min-vh-100 bg-black text-white">
+    
+    <%- include('../partials/header') %>
+    
+    <!-- 2. Main: 垂直水平居中 -->
+    <main class="flex-grow-1 d-flex align-items-center py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- 3. 卡片宽度：注册项较多，稍微宽一点 (col-lg-6 col-xl-5) -->
+                <div class="col-md-8 col-lg-6 col-xl-5">
+                    
+                    <!-- 卡片样式：深色背景，圆角，阴影 -->
+                    <div class="card bg-dark text-white border-secondary shadow-lg rounded-4">
+                        <div class="card-body p-4 p-md-5">
+                            
+                            <div class="text-center mb-4">
+                                <h2 class="fw-bold">
+                                    <i class="bi bi-person-plus-fill text-primary"></i> 用户注册
+                                </h2>
+                                <p class="text-secondary small">加入我们，开启电影之旅</p>
+                            </div>
+                            
+                            <!-- 错误提示 -->
+                            <% if (typeof error !== 'undefined' && error) { %>
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                                    <div><%= error %></div>
+                                </div>
+                            <% } %>
+
+                            <!-- 表单开始：支持文件上传 -->
+                            <form id="registerForm" action="/auth/register" method="POST" enctype="multipart/form-data">
+                                
+                                <!-- 账号 -->
+                                <div class="mb-3">
+                                    <label for="username" class="form-label text-secondary small">账号 (登录ID) <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-person-badge"></i></span>
+                                        <input type="text" class="form-control bg-dark border-secondary text-white" 
+                                            id="username" name="username" 
+                                            value="<%= typeof formData !== 'undefined' && formData.username ? formData.username : '' %>"
+                                            placeholder="请输入唯一登录ID" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="usernameError"></div>
+                                    <div class="form-text text-secondary" style="font-size: 0.8rem;">只能包含字母、数字和下划线</div>
+                                </div>
+
+                                <!-- 昵称 -->
+                                <div class="mb-3">
+                                    <label for="nickname" class="form-label text-secondary small">用户昵称 <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-emoji-smile"></i></span>
+                                        <input type="text" class="form-control bg-dark border-secondary text-white" 
+                                            id="nickname" name="nickname" 
+                                            value="<%= typeof formData !== 'undefined' && formData.nickname ? formData.nickname : '' %>"
+                                            placeholder="大家怎么称呼你？" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="nicknameError"></div>
+                                </div>
+
+                                <!-- 头像上传 -->
+                                <div class="mb-3">
+                                    <label for="avatar" class="form-label text-secondary small">上传头像</label>
+                                    <div class="input-group">
+                                        <input type="file" class="form-control bg-dark border-secondary text-white" 
+                                            id="avatar" name="avatar" accept="image/*">
+                                    </div>
+                                    <div class="form-text text-secondary" style="font-size: 0.8rem;">支持 JPG, PNG, GIF</div>
+                                </div>
+
+                                <!-- 邮箱 -->
+                                <div class="mb-3">
+                                    <label for="email" class="form-label text-secondary small">电子邮箱 <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" class="form-control bg-dark border-secondary text-white" 
+                                            id="email" name="email"
+                                            value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>"
+                                            placeholder="example@email.com" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="emailError"></div>
+                                </div>
+
+                                <!-- 密码行 (使用 Row 把密码和确认密码并排，节省空间) -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label text-secondary small">密码 <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-lock"></i></span>
+                                            <input type="password" class="form-control bg-dark border-secondary text-white" 
+                                                id="password" name="password" required placeholder="至少6位">
+                                        </div>
+                                        <div class="invalid-feedback" id="passwordError"></div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmPassword" class="form-label text-secondary small">确认密码 <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-secondary border-secondary text-white"><i class="bi bi-check-lg"></i></span>
+                                            <input type="password" class="form-control bg-dark border-secondary text-white" 
+                                                id="confirmPassword" name="confirmPassword" required placeholder="再次输入">
+                                        </div>
+                                        <div class="invalid-feedback" id="confirmPasswordError"></div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 btn-lg mt-2 fw-bold">
+                                    <i class="bi bi-rocket-takeoff me-1"></i> 立即注册
+                                </button>
+                            </form>
+
+                            <div class="text-center mt-4">
+                                <p class="mb-0 text-secondary">已有账号？ 
+                                    <a href="/auth/login" class="text-primary text-decoration-none fw-bold">立即登录</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <%- include('../partials/footer') %>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+</body>
+</html>

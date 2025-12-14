@@ -1,0 +1,1443 @@
+/* ==================== 全局样式 ==================== */
+:root {
+    --primary-color: #e50914;
+    --secondary-color: #a0a0a0;
+    --success-color: #2dd36f;
+    --danger-color: #ff4d4f;
+    --warning-color: #ffc107;
+    --info-color: #0dcaf0;
+    --dark-color: #0f1115;
+    --dark-2: #14161b;
+    --dark-3: #1a1c22;
+    --light-color: #f5f5f5;
+    --muted: #8c8c8c;
+    --font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: #0b0c10;
+    color: #e9e9e9;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==================== Header 样式 ==================== */
+.site-header {
+    background: #111218;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #1f2026;
+}
+
+.logo-link {
+    color: white;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.logo-link:hover {
+    color: white;
+    transform: scale(1.05);
+}
+
+.logo-link h1 {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.search-form .form-control {
+    border-radius: 999px 0 0 999px;
+    background: #1c1e25;
+    border: 1px solid #2a2c34;
+    color: #e9e9e9;
+}
+
+.search-form .form-control::placeholder {
+    color: var(--muted);
+}
+
+.search-form .btn {
+    border-radius: 0 999px 999px 0;
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* ==================== Navigation 样式 ==================== */
+.main-nav {
+    background-color: #0f1015;
+    padding: 12px 16px;
+    border: 1px solid #1f2026;
+    border-radius: 12px;
+    margin-bottom: 6px;
+}
+
+.nav-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.nav-menu-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.nav-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #1a1c22;
+    color: #e9e9e9;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.nav-pill:hover {
+    border-color: #2c2e35;
+    background: #23252d;
+    color: #fff;
+}
+
+.nav-tools .btn {
+    border-radius: 999px;
+    border-color: #2c2e35;
+    color: #e9e9e9;
+}
+
+/* ==================== Sidebar 样式 ==================== */
+.sidebar {
+    background-color: #0f1116;
+    padding: 20px 15px;
+    border: 1px solid #1f2026;
+    border-radius: 12px;
+    min-height: calc(100vh - 220px);
+}
+
+.widget {
+    margin-bottom: 24px;
+    padding: 14px;
+    background-color: #14161c;
+    border-radius: 10px;
+    border: 1px solid #1f2026;
+}
+
+.widget-title {
+    color: #f1f1f1;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1f2026;
+    letter-spacing: 0.5px;
+}
+
+.hot-movies-list,
+.year-list {
+    list-style: none;
+    padding: 0;
+}
+
+.hot-movies-list li,
+.year-list li {
+    margin-bottom: 8px;
+}
+
+.hot-movies-list a,
+.year-list a {
+    color: #e9e9e9;
+    text-decoration: none;
+    display: block;
+    padding: 8px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    background: #1a1c22;
+    border: 1px solid transparent;
+}
+
+.hot-movies-list a:hover,
+.year-list a:hover {
+    background-color: #23252d;
+    color: #fff;
+    transform: translateX(4px);
+    border-color: #2c2e35;
+}
+
+.widget-text {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+/* ==================== Main Content 样式 ==================== */
+main {
+    padding: 18px;
+    background-color: #0f1116;
+    margin: 10px 0 20px;
+    border-radius: 12px;
+    border: 1px solid #1f2026;
+    min-height: calc(100vh - 120px);
+}
+
+.page-title {
+    color: #f1f1f1;
+    font-weight: 700;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #1f2026;
+}
+
+.section-title {
+    color: #f1f1f1;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #1f2026;
+}
+
+/* ==================== Jumbotron 样式 ==================== */
+.jumbotron-custom {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 60px 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.jumbotron-custom::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.jumbotron-content {
+    position: relative;
+    z-index: 2;
+}
+
+.jumbotron-custom .display-4 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* 巨幕背景图片覆盖层 */
+.jumbotron-bg{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:0;
+    filter:brightness(0.45);
+    border-radius:15px;
+}
+
+.jumbotron-custom .lead {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.jumbotron-custom hr {
+    border-color: rgba(255, 255, 255, 0.3);
+    margin: 30px 0;
+}
+
+/* ==================== Carousel 样式 ==================== */
+.carousel-image-placeholder {
+    height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-poster-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.6;
+    z-index: 1;
+}
+
+.carousel-content {
+    text-align: center;
+    color: white;
+    padding: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+.carousel-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.carousel-rating {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.carousel-description {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* ==================== Movie Card 样式 ==================== */
+.movies-layout {
+    margin-top: 8px;
+}
+
+.movies-page-header {
+    gap: 12px;
+}
+
+.filters-bar {
+    background: #0f1116;
+    border: 1px solid #1f2026;
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
+/* Chip 风格筛选 */
+.filter-row{
+    display:flex;
+    align-items:flex-start;
+    gap:18px;
+    padding:10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.filter-row:last-child{ border-bottom:none }
+.filter-label{
+    width:96px;
+    color:#cfcfcf;
+    font-weight:700;
+    padding-top:6px;
+}
+.filter-chips{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.filter-chip{
+    background:#14161c;
+    color:#e9e9e9;
+    border:1px solid #23252d;
+    padding:8px 14px;
+    border-radius:20px;
+    cursor:pointer;
+    font-size:0.95rem;
+}
+.filter-chip.active{
+    background:var(--primary-color);
+    color:#fff;
+    border-color:var(--primary-color);
+}
+.filter-chip:hover{ opacity:0.9 }
+
+@media (max-width:768px){
+    .filter-label{ width:72px }
+}
+
+.filters-form .form-label {
+    color: #e9e9e9;
+    font-size: 0.9rem;
+}
+
+.filters-form .form-select {
+    background: #1a1c22;
+    border: 1px solid #2c2e35;
+    color: #e9e9e9;
+}
+
+.filters-form .form-select:focus {
+    box-shadow: 0 0 0 0.15rem rgba(229, 9, 20, 0.25);
+    border-color: var(--primary-color);
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.movies-grid .btn-outline-light {
+    border-color: #2c2e35;
+    color: #e9e9e9;
+}
+
+.movies-grid .btn-outline-light:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #fff;
+}
+
+.movie-card {
+    background: #14161c;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.movie-poster-placeholder {
+    height: 250px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* 小尺寸海报：显示完整海报而不裁切 */
+.movie-poster-placeholder-small .movie-poster-img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+    background: linear-gradient(135deg, #111 0%, #1a1c22 100%);
+}
+
+.movie-card:hover .movie-poster-img {
+    transform: scale(1.05);
+}
+
+.poster-content {
+    text-align: center;
+}
+
+.poster-content i {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+/* ============ 新增：顶部品牌样式 ============ */
+.brand-logo{
+    display:inline-block;
+    width:44px;
+    height:44px;
+    background:#e50914;
+    color:#fff;
+    font-weight:700;
+    font-size:1.35rem;
+    line-height:44px;
+    text-align:center;
+    border-radius:6px;
+}
+.brand-text .logo-link{ color:#fff; font-weight:700; text-decoration:none; font-size:1.05rem }
+.more-menu{ color:rgba(255,255,255,0.5); font-size:0.95rem }
+
+/* ============ 轮播增强（更大、更酷） ============ */
+.carousel-image-placeholder{ height:520px; border-radius:12px; }
+.carousel-poster-img{ opacity:0.65; filter:brightness(0.6); }
+.carousel-indicators button{
+    width:8px; height:8px; border-radius:50%; background:#fff; opacity:0.5;
+}
+.carousel-indicators .active{ opacity:1; transform:scale(1.2); }
+.carousel-control-prev-icon, .carousel-control-next-icon{ filter:invert(1) brightness(3); }
+
+/* ============ 热播推荐 横向滚动卡片 ============ */
+.top-movies-section{ margin-top:20px; }
+.recommendation-list{
+    display:flex;
+    gap:18px;
+    overflow-x:auto;
+    padding:12px 4px;
+    -webkit-overflow-scrolling:touch;
+}
+.recommendation-item{
+    flex:0 0 180px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:160px;
+}
+.rec-poster{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    border-radius:14px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.6);
+}
+.rec-poster.placeholder{
+    background:#1a1c22;
+    display:flex; align-items:center; justify-content:center; color:#888; font-size:2rem;
+}
+.rec-title{ margin-top:10px; font-size:0.95rem; color:#fff; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:100%; }
+.rec-sub{ margin-top:4px; font-size:0.85rem; color:var(--muted); }
+.more-link{ font-size:0.95rem; color:var(--muted); text-decoration:none }
+.more-link:hover{ color:#fff }
+
+/* 海报悬停播放按钮样式 */
+.poster-link{ position:relative; display:block; width:100%; border-radius:14px; overflow:hidden; }
+.poster-with-play .rec-poster{ display:block; transition: transform 0.25s ease; }
+.poster-with-play .play-btn-overlay{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(0.9);
+    width:64px;
+    height:64px;
+    background:rgba(0,0,0,0.55);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:28px;
+    opacity:0;
+    transition:all 0.22s ease;
+    text-decoration:none;
+    border:2px solid rgba(255,255,255,0.08);
+}
+.poster-with-play:hover .rec-poster{ transform:scale(1.03); }
+.poster-with-play:hover .play-btn-overlay{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+.play-btn-overlay:focus{ outline:none; box-shadow:0 0 0 4px rgba(229,9,20,0.12); }
+
+
+/* 隐藏滚动条（部分浏览器） */
+.recommendation-list::-webkit-scrollbar{ height:8px }
+.recommendation-list::-webkit-scrollbar-thumb{ background:#23252d; border-radius:8px }
+
+@media (max-width: 768px){
+    .carousel-image-placeholder{ height:360px }
+    .rec-poster{ height:200px }
+    .recommendation-item{ flex:0 0 140px }
+}
+
+.poster-content p {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.movie-info {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-title {
+    color: #f1f1f1;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.movie-meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.movie-meta span {
+    margin-right: 15px;
+}
+
+.movie-description {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+    flex-grow: 1;
+}
+
+.movie-genres {
+    margin-bottom: 15px;
+}
+
+.movie-card-small {
+    background: #14161c;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+    transition: all 0.3s ease;
+    border: 1px solid #1f2026;
+}
+
+.movie-card-small:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
+}
+
+.movie-poster-placeholder-small {
+    height: 260px;
+    background: linear-gradient(135deg, #b9131d 0%, #6d0c12 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    .movie-poster-placeholder-small { height: 220px; }
+}
+
+.movie-poster-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card-small:hover .movie-poster-img {
+    transform: scale(1.08);
+}
+
+.movie-info-small {
+    padding: 8px 10px;
+}
+
+.movie-title-small {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #f1f1f1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.25;
+    word-break: break-word;
+    min-height: 2.4em;
+}
+
+.movie-rating-small,
+.movie-year-small {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.dark-card {
+    background: #14161c;
+    border: 1px solid #1f2026;
+    color: #e9e9e9;
+}
+
+/* ==================== Movie Detail 样式 ==================== */
+.movie-detail-page {
+    padding: 20px 0;
+}
+
+/* 中心化电影列表容器，使列宽与海报宽度对齐 */
+.centered-container{
+    max-width: 1180px; /* 约合 5 列 220px 卡片 + 间隙 */
+    margin: 0 auto;
+    padding: 0 12px;
+}
+
+/* 在电影列表中固定每列卡片宽度，居中显示 */
+.movies-page .movies-grid .row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:18px;
+}
+.movies-page .movies-grid .row > div{
+    flex: 0 0 220px;
+    max-width: 220px;
+}
+
+@media (max-width: 768px){
+    .movies-page .movies-grid .row > div{ flex: 0 0 48%; max-width:48%; }
+    .centered-container{ max-width: 720px }
+}
+
+@media (max-width: 480px){
+    .movies-page .movies-grid .row > div{ flex: 0 0 100%; max-width:100%; }
+    .centered-container{ padding: 0 8px }
+}
+
+.movie-poster-large {
+    height: 500px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-poster-img-large {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.poster-content-large {
+    text-align: center;
+    padding: 30px;
+}
+
+.poster-content-large i {
+    font-size: 5rem;
+    margin-bottom: 20px;
+}
+
+.poster-content-large h3 {
+    font-size: 2rem;
+}
+
+.movie-detail-title {
+    color: #f1f1f1;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.movie-detail-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.movie-description-full {
+    color: var(--muted);
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+/* === 电影详情额外样式 === */
+.meta-pill{
+    display:inline-block;
+    background:rgba(255,255,255,0.04);
+    color:#e9e9e9;
+    padding:6px 10px;
+    border-radius:6px;
+    font-size:0.95rem;
+    border:1px solid rgba(255,255,255,0.03);
+}
+
+.action-buttons .btn-outline-light{
+    border-color:rgba(255,255,255,0.08);
+    color:#e9e9e9;
+}
+
+.action-buttons .btn-outline-light:hover{
+    background-color: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.15);
+}
+
+#favoriteBtn.active {
+    background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+    border-color: #e50914;
+    color: white;
+}
+
+#favoriteBtn.active:hover {
+    background: linear-gradient(135deg, #ff1a24 0%, #e50914 100%);
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+}
+
+.btn-play{ background: var(--primary-color); border-color: var(--primary-color); }
+
+.poster-with-play .play-btn-overlay{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:86px;
+    height:86px;
+    background:linear-gradient(135deg, rgba(229,9,20,0.95), rgba(229,9,20,0.85));
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:36px;
+    box-shadow:0 12px 30px rgba(229,9,20,0.25);
+    text-decoration:none;
+    border:2px solid rgba(255,255,255,0.06);
+}
+
+.detail-meta-lines div{ color:var(--muted); margin-bottom:6px; }
+
+.synopsis-header{ margin-top:12px; margin-bottom:8px; }
+.synopsis-pill{
+    display:inline-block;
+    background:var(--primary-color);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:20px;
+    font-weight:600;
+}
+
+/* ==================== Auth Pages 样式 ==================== */
+.auth-page {
+    padding: 40px 0;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.auth-title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+/* ==================== Profile Page 样式 ==================== */
+.profile-card,
+.profile-info-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.profile-info-card .info-item {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light-color);
+}
+
+.profile-info-card .info-item:last-child {
+    border-bottom: none;
+}
+
+/* ==================== Error Page 样式 ==================== */
+.error-page {
+    padding: 80px 20px;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.error-title {
+    color: var(--dark-color);
+    margin-bottom: 20px;
+}
+
+.error-message {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+/* ==================== Footer 样式 ==================== */
+.site-footer {
+    background: #0b0c10;
+    color: #e9e9e9;
+    padding: 32px 0 26px;
+    margin-top: auto;
+    border-top: 1px solid #1f2026;
+}
+
+.footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    text-align: center;
+}
+
+.footer-nav {
+    display: grid;
+    grid-template-columns: 1.2fr 2fr 1.3fr;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+}
+
+.brand-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.footer-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    justify-content: center;
+}
+
+.footer-menu a,
+.footer-links-inline a,
+.footer-actions .action-link {
+    color: #e9e9e9;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.footer-menu a:hover,
+.footer-links-inline a:hover,
+.footer-actions .action-link:hover {
+    color: var(--primary-color);
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+}
+
+.footer-actions .action-link i {
+    margin-right: 6px;
+}
+
+.footer-social {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-social a {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #14161c;
+    border: 1px solid #1f2026;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #e9e9e9;
+    transition: all 0.2s ease;
+}
+
+.footer-social a:hover {
+    background: #23252d;
+    border-color: #2c2e35;
+    color: var(--primary-color);
+}
+
+.footer-links-inline {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 0.92rem;
+    justify-content: center;
+}
+
+.footer-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    color: #a0a0a0;
+    font-size: 0.9rem;
+}
+
+.footer-meta .divider {
+    color: #3a3c44;
+}
+
+@media (max-width: 992px) {
+    .footer-nav {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        text-align: center;
+    }
+    .footer-actions {
+        justify-content: center;
+    }
+    .footer-menu {
+        justify-content: center;
+    }
+    .footer-social {
+        justify-content: center;
+    }
+    .footer-links-inline {
+        justify-content: center;
+    }
+}
+
+/* ==================== CSS3 动画效果 ==================== */
+
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+/* 滑入动画 */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    animation: slideUp 1s ease-out;
+}
+
+/* 弹跳动画 */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+.animate-bounce {
+    animation: bounce 2s infinite;
+}
+
+/* 悬停效果 */
+.movie-card,
+.movie-card-small {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== 响应式设计 ==================== */
+
+/* 平板设备 */
+@media (max-width: 992px) {
+    .jumbotron-custom .display-4 {
+        font-size: 2rem;
+    }
+    
+    .jumbotron-custom .lead {
+        font-size: 1.2rem;
+    }
+    
+    .carousel-image-placeholder {
+        height: 300px;
+    }
+    
+    .movie-poster-large {
+        height: 400px;
+        margin-bottom: 20px;
+    }
+}
+
+/* 移动设备 */
+@media (max-width: 768px) {
+    .site-header .row {
+        text-align: center;
+    }
+    
+    .logo-link h1 {
+        font-size: 1.5rem;
+    }
+    
+    .jumbotron-custom {
+        padding: 40px 20px;
+    }
+    
+    .jumbotron-custom .display-4 {
+        font-size: 1.5rem;
+    }
+    
+    .jumbotron-custom .lead {
+        font-size: 1rem;
+    }
+    
+    .carousel-image-placeholder {
+        height: 250px;
+    }
+    
+    .carousel-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .main-nav,
+    .sidebar {
+        margin-bottom: 20px;
+        min-height: auto;
+    }
+    
+    .movie-poster-large {
+        height: 300px;
+    }
+    
+    .auth-card {
+        padding: 25px;
+    }
+    
+    .error-code {
+        font-size: 5rem;
+    }
+}
+
+/* 小屏幕设备 */
+@media (max-width: 576px) {
+    main {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .movie-card {
+        margin-bottom: 20px;
+    }
+}
+
+/* ==================== 手风琴样式 ==================== */
+.hot-movies-accordion {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
+/* 自定义滚动条样式 */
+.hot-movies-accordion::-webkit-scrollbar {
+    width: 6px;
+}
+
+.hot-movies-accordion::-webkit-scrollbar-track {
+    background: #1c1e25;
+    border-radius: 10px;
+}
+
+.hot-movies-accordion::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+.hot-movies-accordion::-webkit-scrollbar-thumb:hover {
+    background: #764ba2;
+}
+
+.hot-movies-accordion .accordion-item {
+    background-color: #14161b;
+    border: 1px solid #2a2c34;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.hot-movies-accordion .accordion-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.hot-movies-accordion .accordion-button {
+    background-color: #1c1e25;
+    color: #f5f5f5;
+    border: none;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.hot-movies-accordion .accordion-button:not(.collapsed) {
+    background-color: #2a2c34;
+    color: #667eea;
+    box-shadow: none;
+}
+
+.hot-movies-accordion .accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+}
+
+.hot-movies-accordion .accordion-button:hover {
+    background-color: #252730;
+}
+
+.hot-movies-accordion .accordion-button::after {
+    filter: brightness(0) invert(1);
+}
+
+.hot-movies-accordion .accordion-body {
+    background-color: #14161b;
+    color: #c8c8c8;
+    padding: 16px;
+}
+
+.accordion-movie-poster {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.accordion-movie-poster:hover {
+    transform: scale(1.05);
+}
+
+.movie-description {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #a8a8a8;
+    margin-bottom: 12px;
+    text-align: justify;
+}
+
+.movie-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.movie-rating-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.movie-year-badge {
+    background-color: #2a2c34;
+    color: #f5f5f5;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.btn-detail {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-detail:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-detail i {
+    transition: transform 0.3s ease;
+}
+
+.btn-detail:hover i {
+    transform: translateX(4px);
+}
+
+.empty-message {
+    text-align: center;
+    padding: 30px 20px;
+    color: #8c8c8c;
+    font-size: 0.95rem;
+}
+
+/* ==================== 评论和回复样式 ==================== */
+.comment-item, .reply-item {
+    transition: background-color 0.3s ease;
+}
+
+.comment-item:hover {
+    background-color: #1a1c22 !important;
+}
+
+.reply-item {
+    position: relative;
+}
+
+.reply-item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.comment-actions .btn-link {
+    background: none;
+    border: none;
+    color: #a8a8a8;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+.comment-actions .btn-link:hover {
+    color: #667eea;
+}
+
+.comment-actions .btn-link i {
+    margin-right: 4px;
+}
+
+.toggle-replies-btn {
+    background: none;
+    border: none;
+    color: #667eea;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.toggle-replies-btn:hover {
+    color: #764ba2;
+}
+
+.toggle-replies-btn i {
+    transition: transform 0.3s ease;
+}
+
+.reply-input-container {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.replies-container {
+    border-left: 2px solid #2a2c34;
+}
+
+.reply-input {
+    flex: 1;
+}
+
+/* 右键菜单样式 */
+#contextMenu .context-menu-item {
+    transition: background-color 0.2s ease;
+}
+
+#contextMenu .context-menu-item:hover {
+    background-color: #2a2c34 !important;
+}
+
+/* ==================== 管理员按钮样式 ==================== */
+.btn-gradient-admin {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-gradient-admin:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.btn-gradient-admin i {
+    font-size: 1rem;
+}
