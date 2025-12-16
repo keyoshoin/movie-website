@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 13/12/2025 20:54:49
+ Date: 15/12/2025 09:00:20
 */
 
 SET NAMES utf8mb4;
@@ -37,13 +37,15 @@ CREATE TABLE `comments`  (
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `fk_parent_comment` FOREIGN KEY (`parent_id`) REFERENCES `comments` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of comments
 -- ----------------------------
 INSERT INTO `comments` VALUES (1, 1, 6, NULL, '还不错', '2025-12-13 18:17:45', '2025-12-13 18:17:45');
 INSERT INTO `comments` VALUES (3, 1, 6, 1, '222', '2025-12-13 19:31:19', '2025-12-13 19:31:19');
+INSERT INTO `comments` VALUES (4, 2, 6, NULL, '111', '2025-12-14 20:59:11', '2025-12-14 20:59:11');
+INSERT INTO `comments` VALUES (5, 2, 6, 4, '23', '2025-12-14 20:59:37', '2025-12-14 20:59:37');
 
 -- ----------------------------
 -- Table structure for favorites
@@ -60,11 +62,12 @@ CREATE TABLE `favorites`  (
   INDEX `idx_movie_id`(`movie_id` ASC) USING BTREE,
   CONSTRAINT `favorites_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movies` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of favorites
 -- ----------------------------
+INSERT INTO `favorites` VALUES (4, 2, 6, '2025-12-14 20:59:51');
 
 -- ----------------------------
 -- Table structure for movies
